@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build web server Docker image
+        run: docker build -t caliberly-web-server-image web_server/
+
+      - name: Build database server Docker image
+        run: docker build -t caliberly-database-server-image database/
+
+      - name: Build application server Docker image
+        run: docker build -t caliberly-app-server-image application/
+
+      # Add steps for running tests if applicable

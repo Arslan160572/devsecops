@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-server
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: app-server
+  template:
+    metadata:
+      labels:
+        app: app-server
+    spec:
+      containers:
+      - name: app-server
+        image: your-app-server-image:latest
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+        - name: secrets-volume
+          mountPath: /var/secrets/aws
+          readOnly: true
+      volumes:
+      - name: secrets-volume
+        secret:
+          secretName: database-credentials
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service
+spec:
+  selector:
+    app: app-server
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
